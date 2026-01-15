@@ -18,7 +18,24 @@ const debateSchema = new mongoose.Schema({
   id: {
     type: Number,
     unique: true
+  },
+  agree: {
+    type: Number,
+    default: 0
+  },
+  disagree: {
+    type: Number,
+    default: 0
+  },
+  CommentsPostive:{
+     type: Array,
+     default: ["heloo"],   
+  },
+  CommentsNegative:{
+    type: Array,
+    default: ["hi"]
   }
+
 });
 
 export default mongoose.model("Debate", debateSchema);
