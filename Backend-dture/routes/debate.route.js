@@ -2,6 +2,7 @@
  import express from "express";
  
  import debateSchema from "../models/debate.model.js";
+import authMiddleware from "../middleware/auth.js";
   
  const  router = express();
  const port = 3000;  
@@ -10,14 +11,15 @@
 
  router.post("/create", async (req, res) => {
   try {
-    const { name, description, image, duration, id } = req.body;
+    const { name, description, image, duration, id  , user } = req.body;
 
     const debate =  await debateSchema.create({
       id,
   name,
   description,
   image,
-  duration
+  duration,
+  user
    });
 
     return res.status(201).json({
@@ -53,23 +55,31 @@ router.get("/debates", async (req, res) => {
  
  
  
-router.post("/debates/:id/agree", async (req, res) => {
-   const { text } = req.body;
+router.post("/debates/:id", async (req, res) => {
+   const { voter, agree , disagree } = req.body;
  
-   if (!text) {
-     return res.status(400).json({ message: "Comment required" });
-   }
  
    try {
-     const debate = await Debate.findOne({ id: Number(req.params.id) });
+     const debate = await debateSchema.findOne({ id: Number(req.params.id) });
  
      if (!debate) {
        return res.status(404).json({ message: "Debate not found" });
      }
- 
-     debate.agree += 1;
-     debate.commentsPositive.push({ text });
- 
+   
+     if (!debate.Voters.includes(voter)) {
+       debate.Voters.push(voter);
+      
+     } else {
+       return res.status(400).json({ message: "User has already voted" });
+     }
+     
+     if (agree) { 
+        debate.agree += 1;
+      } else if (disagree) {
+        debate.disagree += 1;
+      }
+  
+    
      await debate.save();
  
      res.status(200).json({
@@ -81,34 +91,49 @@ router.post("/debates/:id/agree", async (req, res) => {
    }
  });
  
+ router.get("/debates/:id", async (req, res) => {
+  const debate = await debateSchema.findById(req.params.id);
+  if (!debate) return res.status(404).json({ message: "Not found" });
+  res.json(debate);
+});
+
+router.put("/debates/:id/agree", authMiddleware, async (req, res) => {
+  const userId = req.userId; // ✅ correct
+
+  const debate = await debateSchema.findById(req.params.id);
+  if (!debate) return res.status(404).json({ message: "Debate not found" });
+
+  if (debate.Voters.includes(userId)) {
+    return res.status(400).json({ message: "Already voted" });
+  }
+
+  debate.agree += 1;
+  debate.Voters.push(userId);
+
+  await debate.save();
+  res.json(debate);
+});
+
+
+
+router.put("/debates/:id/disagree", authMiddleware, async (req, res) => {
+  const userId = req.userId;
+
+  const debate = await debateSchema.findById(req.params.id);
+  if (!debate) return res.status(404).json({ message: "Debate not found" });
+
+  if (debate.Voters.includes(userId)) {
+    return res.status(400).json({ message: "Already voted" });
+  }
+
+  debate.disagree += 1;
+  debate.Voters.push(userId);
+
+  await debate.save();
+  res.json(debate);
+});
+
+
  
- 
-router.post("/debates/:id/disagree", async (req, res) => {
-   const { text } = req.body;
- 
-   if (!text) {
-     return res.status(400).json({ message: "Comment required" });
-   }
- 
-   try {
-     const debate = await Debate.findOne({ id: Number(req.params.id) });
- 
-     if (!debate) {
-       return res.status(404).json({ message: "Debate not found" });
-     }
- 
-     debate.disagree += 1;
-     debate.commentsNegative.push({ text });
- 
-     await debate.save();
- 
-     res.status(200).json({
-       message: "Disagree vote added",
-       disagree: debate.disagree,
-     });
-   } catch (err) {
-     res.status(500).json({ message: "Server error" });
-   }
- });
  
 export default router;

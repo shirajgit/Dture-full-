@@ -15,6 +15,9 @@ const debateSchema = new mongoose.Schema({
   duration: {
     type: String
   },
+  user:{
+    type: String
+  },
   id: {
     type: Number,
     unique: true
@@ -27,15 +30,10 @@ const debateSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  CommentsPostive:{
-     type: Array,
-     default: ["heloo"],   
-  },
-  CommentsNegative:{
-    type: Array,
-    default: ["hi"]
+  Voters:{
+    type: [String],
+    default: []
   }
-
 });
 
 export default mongoose.model("Debate", debateSchema);
