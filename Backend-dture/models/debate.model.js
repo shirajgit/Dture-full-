@@ -33,7 +33,16 @@ const debateSchema = new mongoose.Schema({
   Voters:{
     type: [String],
     default: []
+  },
+  agreeCom: {
+    type: String,
+    default:'Agree Commets'
+  },
+  disagreeCom: {
+    type: String,
+    default:'disagree Commets'
   }
+
 });
 
 export default mongoose.model("Debate", debateSchema);

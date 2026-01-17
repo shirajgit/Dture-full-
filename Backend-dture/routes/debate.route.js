@@ -134,6 +134,22 @@ router.put("/debates/:id/disagree", authMiddleware, async (req, res) => {
 });
 
 
- 
+ router.put('debates/:id/discommets', authMiddleware, async (req, res)=>{
+  const userId = req.userId;
+  const {Commets} = req.body;
+
+  const debate = await debateSchema.findById(req.params.id);
+  if (!debate) return res.status(404).json({ message: "Debate not found" });
+
+  if (debate.Voters.includes(userId)) {
+    return res.status(400).json({ message: "Already voted" });
+  }
+
+  debate.disagreeCom = Commets ;
+
+  await debate.save();
+  res.json(debate);
+
+ })
  
 export default router;
