@@ -7,30 +7,32 @@ import authMiddleware from "../middleware/auth.js";
  const  router = express();
  const port = 3000;  
  
- 
 
- router.post("/create", async (req, res) => {
+router.post("/create", async (req, res) => {
   try {
-    const { name, description, image, duration, id  , user } = req.body;
+    const { name, description, duration, image, user,id } = req.body;
+    const expire = 1
 
-    const debate =  await debateSchema.create({
+    if(duration === "7 Days"){
+      expire = 7 } else if(duration === "3 Days"){ expire = 3} 
+
+    const expiresAt = new Date(
+      Date.now() + duration * 24 * 60 * 60 * 1000
+    );
+
+    const debate = await  debateSchema.create({
       id,
-  name,
-  description,
-  image,
-  duration,
-  user
-   });
+      name,
+      description,
+      image,
+      duration,
+      user,
+      expiresAt,
+    });
 
-    return res.status(201).json({
-      message: "Debate created successfully",
-      debate,
-    });
+    res.status(201).json({ success: true, debate });
   } catch (err) {
-    return res.status(500).json({
-      message: "Error creating debate",
-      error: err.message,
-    });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
