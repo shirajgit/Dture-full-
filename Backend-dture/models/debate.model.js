@@ -7,7 +7,7 @@ const debateSchema = new mongoose.Schema(
     image: String,
 
     duration: {
-      type: Number,
+      type: String,
       required: true,
     },
 

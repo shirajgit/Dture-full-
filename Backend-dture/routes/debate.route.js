@@ -11,16 +11,16 @@ import authMiddleware from "../middleware/auth.js";
 router.post("/create", async (req, res) => {
   try {
     const { name, description, duration, image, user,id } = req.body;
-    const expire = 1
+     let expire = 1
 
     if(duration === "7 Days"){
       expire = 7 } else if(duration === "3 Days"){ expire = 3} 
 
     const expiresAt = new Date(
-      Date.now() + duration * 24 * 60 * 60 * 1000
+      Date.now() + expire * 24 * 60 * 60 * 1000
     );
 
-    const debate = await  debateSchema.create({
+    const debate = await debateSchema.create({
       id,
       name,
       description,
