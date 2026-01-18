@@ -35,14 +35,14 @@ const debateSchema = new mongoose.Schema({
     default: []
   },
   agreeCom: {
-    type: String,
+    type: [String],
     default:'Agree Commets'
   },
   disagreeCom: {
-    type: String,
+    type: [String],
     default:'disagree Commets'
-  }
-
+  },
+  
 });
 
 export default mongoose.model("Debate", debateSchema);
