@@ -1,12 +1,15 @@
  import cors from "cors";
  import express from "express";
- 
+ import deletedDebateSchema from "../models/DeletedDebate.js";
  import debateSchema from "../models/debate.model.js";
 import authMiddleware from "../middleware/auth.js";
+ 
+import dotenv from "dotenv";
+
+dotenv.config();
   
  const  router = express();
- const port = 3000;  
- 
+
 
 router.post("/create", async (req, res) => {
   try {
@@ -55,6 +58,24 @@ router.get("/debates", async (req, res) => {
    }
  });
  
+
+ router.get("/delete-debates", async (req, res) => {
+   try {
+     const debates = await deletedDebateSchema.find();
+ 
+     return res.status(200).json({
+       success: true,
+       debates,
+     });
+   } catch (err) {
+     console.error("GET /debates error:", err);
+ 
+     return res.status(500).json({
+       success: false,
+       message: err.message,
+     });
+   }
+ });
  
  
 router.post("/debates/:id", async (req, res) => {
@@ -164,5 +185,8 @@ router.put("/debates/:id/discommets",authMiddleware , async (req, res)=>{
   res.json(debate);
 
  })
+ 
+
+ 
  
 export default router;

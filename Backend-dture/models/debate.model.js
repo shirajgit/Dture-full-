@@ -35,10 +35,7 @@ const debateSchema = new mongoose.Schema(
 );
  
 
-debateSchema.index(
-  { expiresAt: 1 },
-  { expireAfterSeconds: 0 }
-);
+ 
 
  
 export default mongoose.model("Debate", debateSchema);

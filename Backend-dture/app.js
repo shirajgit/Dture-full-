@@ -1,9 +1,11 @@
 import cors from "cors";
 import express from "express";
 import mainRouter from "./routes/debate.route.js";
+import aiRouter from "./routes/ai.route.js"
 import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 import userRouter from "./routes/user.route.js";  
+import "./cron/expireDebates.js";
 
 dotenv.config();
 const app = express();
@@ -18,6 +20,7 @@ app.get('/', (req, res) => {
 
 
 app.use("/", mainRouter);
+app.use("/", aiRouter);
 app.use("/user", userRouter);
 
 
