@@ -5,18 +5,19 @@ const router = express.Router();
 
 router.post("/ai-result", async (req, res) => {
   try {
-    const { debates } = req.body;
+    const { debate } = req.body;
 
-    if (!debates || debates.length === 0) {
+    if (!debate ) {
       return res.status(400).json({ message: "No debates provided" });
     }
 
-    const prompt = debates.map((d, i) => `
-Debate ${i + 1}:
-Title: ${d.name}
-Agree Votes: ${d.agree}
-Disagree Votes: ${d.disagree}
-`).join("\n");
+    const prompt = `
+Debate ${1}:
+Title: ${debate.name}
+Agree Votes: ${debate.agree}
+Disagree Votes: ${debate.disagree}
+Created By : ${debate.user}
+` 
 
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
@@ -28,17 +29,32 @@ Disagree Votes: ${d.disagree}
             content: "You are an AI judge that decides debate winners.",
           },
           {
-            role: "user",
-            content: `
-Analyze each debate and return:
-- Debate title
-- Winner (AGREE or DISAGREE)
-- One-line reason
+  role: "user",
+  content: `
+You are an AI analyst summarizing the final result of ended debates
+for a mobile app audience.
 
+For EACH debate:
+- Write a clean, friendly AI Generated Summary
+- Mention total participants
+- Explain what AGREE supporters think
+- Explain what DISAGREE critics think
+- Give a neutral world perspective
+- End with "World’s Verdict" based on vote ratio
+
+Rules:
+- Use emojis
+- Keep it readable like a social media post
+- Do NOT use markdown headings
+- Do NOT mention numbers in brackets
+- Sound confident and neutral
+
+Debate Data:
 ${prompt}
-`,
-          },
-        ],        
+`
+}
+,
+        ],
       },
       {
         headers: {
