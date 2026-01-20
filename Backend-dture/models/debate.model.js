@@ -27,9 +27,29 @@ const debateSchema = new mongoose.Schema(
     disagree: { type: Number, default: 0 },
 
     Voters: { type: [String], default: [] },
+    
+agreeCom: {
+  type: [
+    {
+      user: { type: String, required: true },
+      commets: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
+  default: [],
+},
 
-    agreeCom: { type: [String], default: [] },
-    disagreeCom: { type: [String], default: [] },
+disagreeCom: {
+  type: [
+    {
+      user: { type: String, required: true },
+      commets: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
+  default: [],
+},
+
   },
   { timestamps: true }
 );

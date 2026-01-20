@@ -138,7 +138,6 @@ router.put("/debates/:id/agree", authMiddleware, async (req, res) => {
 });
 
 
-
 router.put("/debates/:id/disagree", authMiddleware, async (req, res) => {
   const userId = req.userId;
 
@@ -159,13 +158,17 @@ router.put("/debates/:id/disagree", authMiddleware, async (req, res) => {
 
 router.put("/debates/:id/discommets",authMiddleware , async (req, res)=>{
   const userId = req.userId;
-  const {commets} = req.body;
+  const {commets ,user} = req.body;
 
   const debate = await debateSchema.findById(req.params.id);
   if (!debate) return res.status(404).json({ message: "Debate not found" });
 
  
-  debate.disagreeCom.push(commets);
+   debate.disagreeCom.push({
+        user,
+        commets,
+        createdAt: new Date(),
+      });
 
   await debate.save();
   res.json(debate);
@@ -174,12 +177,16 @@ router.put("/debates/:id/discommets",authMiddleware , async (req, res)=>{
 
  router.put("/debates/:id/aggcommets",authMiddleware , async (req, res)=>{
  
-  const {commets} = req.body;
+  const {commets ,user} = req.body;
 
   const debate = await debateSchema.findById(req.params.id);
   if (!debate) return res.status(404).json({ message: "Debate not found" });
    
-  debate.agreeCom.push(commets);
+  debate.agreeCom.push({
+        user,
+         commets,
+        createdAt: new Date(),
+      });
 
   await debate.save();
   res.json(debate);

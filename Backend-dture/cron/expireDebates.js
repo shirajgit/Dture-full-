@@ -23,6 +23,8 @@ cron.schedule("*/1 * * * *", async () => {
         agree: d.agree,
         disagree: d.disagree,
         expiredAt: d.expiresAt,
+        disagreeCom: d.disagreeCom ,
+        agreeCom: d.agreeCom
       }))
     );
 

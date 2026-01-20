@@ -9,6 +9,27 @@ const deletedDebateSchema = new mongoose.Schema({
   user: String,
   agree: Number,
   disagree: Number,
+  agreeCom: {
+  type: [
+    {
+      user: { type: String, required: true },
+      commets: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
+  default: [],
+},
+
+ disagreeCom: {
+  type: [
+    {
+      user: { type: String, required: true },
+      commets: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
+  default: [],
+},
   deletedAt: {
     type: Date,
     default: Date.now
