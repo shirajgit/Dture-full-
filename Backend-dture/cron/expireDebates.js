@@ -28,7 +28,7 @@ cron.schedule("*/1 * * * *", async () => {
       }))
     );
 
-    await Debate.deleteMany({
+    await  debateSchema.deleteMany({
       _id: { $in: expiredDebates.map(d => d._id) },
     });
 
